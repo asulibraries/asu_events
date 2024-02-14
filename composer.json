@@ -1,0 +1,10 @@
+{
+  "name": "asulibraries/asu_events",
+  "description": "Fork of ASU Event integration module.",
+  "type": "drupal-module",
+  "license": "MIT",
+
+  "require": {},
+  "version": "1.0"
+}
+
