@@ -29,3 +29,5 @@ If you're using this module outside of Webspark or in other situations, see the 
 ## Requirements
 
 Drupal 8.x, 9.x, or 10.x.
+
+Fontawesome and Fontawesome Iconpicker modules.

@@ -1,6 +1,8 @@
 # NodeJS projects
 !node_modules
 node_modules/*
+!node_modules/react
+!node_modules/react-dom
 
 node_modules/@asu-design-system
 !node_modules/@asu-design-system
