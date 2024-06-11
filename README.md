@@ -25,7 +25,10 @@ If you're using this module outside of Webspark or in other situations, see the 
 4. Go to Admin -> Structure -> Blocks and create a custom block -> Events.
 5. Embed the block via layout builder or entity embed on a page.
 
+See lib-notes.md for changes made from the Webspark ASU Events module.
 
 ## Requirements
 
 Drupal 8.x, 9.x, or 10.x.
+
+Fontawesome and Fontawesome Iconpicker modules.

@@ -1,7 +1,6 @@
 events-component:
   version: 1.0.0
   dependencies:
-    - asu_react_integration/reactjs
     - core/jquery
     - core/drupal
     - core/drupalSettings
@@ -9,3 +8,8 @@ events-component:
     node_modules/@asu/component-events/dist/vendor.umd.js: { }
     node_modules/@asu/component-events/dist/asuEvents.umd.js: { }
     js/asu_events.js: { }
+reactjs:
+  version: 1.x
+  js:
+    node_modules/react/umd/react.production.min.js: {minified: true, weight: -10}
+    node_modules/react-dom/umd/react-dom.production.min.js: {minified: true, weight: -10}
