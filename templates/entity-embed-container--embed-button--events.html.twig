@@ -2,12 +2,15 @@
 /**
  * @file
  * Template for event block.
+ * Copied from block--inline-block--events.html.twig from Webspark
+ * ASU Events module.
  */
 #}
 {% set classes = [
   'block',
   'block-' ~ configuration.provider|clean_class,
   'block-' ~ plugin_id|clean_class,
+  'block-' ~ 'asu-events',
 ] %}
 {{ attach_library('asu_events/event-components-library') }}
 {{ attach_library('asu_events/reactjs') }}

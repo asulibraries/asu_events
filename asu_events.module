@@ -3,21 +3,41 @@
 use Drupal\Core\Url;
 
 /**
- * Implements hook_preprocess_HOOK().
+ * This is modified heavily from the version in Webspark 2.0.
+ *
+ * We embed event blocks into our content via entity embed which
+ * renders the block_content but not as a block. So we have to change
+ * the preprocess functions to work with entity embed containers instead
+ * of blocks.
  */
-function asu_events_preprocess_block(&$variables) {
-  $plugin_id = $variables['base_plugin_id'] ?? '';
 
-  if ($plugin_id != 'inline_block') {
-    return;
-  }
 
-  if ($variables['derivative_plugin_id'] == 'events') {
+/**
+ * Implements hook_preprocess_HOOK().
+ *
+ * {@inheritdoc}
+ *
+ * Combined the old library events module with the new webspark
+ * module in this function.
+ * Beginning bits are from the previous version of
+ * the events module and the rest is from the new version.
+ *
+ */
+function asu_events_preprocess_entity_embed_container(&$variables) {
+  $element = $variables['element'];
+  $block = $element['#entity'];
+  $block_type = $block->bundle();
+  if ($block_type == "events") {
+    $variables['base_plugin_id'] = 'inline_block';
+    $variables['derivative_plugin_id'] = 'events';
+    $variables['content']['#block_content'] = $block;
+
+    /* Moved the following from block_alter function to this one */
     $rand_id = random_int(0, PHP_INT_MAX);
     $events_block = (object)[
-      'header' => new \stdClass(),
-      'ctaButton' => new \stdClass(),
-      'dataSource' => new \stdClass(),
+        'header' => new \stdClass(),
+        'ctaButton' => new \stdClass(),
+        'dataSource' => new \stdClass(),
     ];
 
     $variables['events_id'] = 'events-wrapper-' . $rand_id;
@@ -59,21 +79,37 @@ function asu_events_preprocess_block(&$variables) {
 }
 
 /**
- * Implements hook_config_readonly_whitelist_patterns();
- * Make all the config files from this module readonly.
- * @return array
+ * Implements hook_theme().
+ *
+ * {@inheritdoc}
+ *
+ * Tell the module to use the correct theme file - we need
+ * entity embeds rather than inline blocks.
  */
-function asu_events_config_readonly_whitelist_patterns() {
-  // Get all the module configuration files.
-  $module = \Drupal::service('module_handler')
-    ->getModule(basename(__FILE__, '.module'))
-    ->getName();
-  $configs = \Drupal::service('webspark.config_manager')->getModuleConfigFiles($module);
-  // Lock all the configurations from this module.
-  if (\Drupal::state()->get('configuration_locked', TRUE)) {
-    return array_map(function ($item) { return '~' . $item; }, $configs);
-  }
-  else {
-    return [];
+function asu_events_theme($existing, $type, $theme, $path) {
+  $templates = $path . '/templates';
+  return [
+      'entity_embed_container__embed_button__events' => [
+          'base hook' => 'entity_embed_container',
+          'render element' => 'element'
+      ]
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_alter()
+ *
+ * @param array $suggestions
+ * @param array $variables
+ * @param $hook
+ * @return void
+ *
+ * Add a theme suggestion for entity embed button plus the block type.
+ *
+ */
+function asu_events_theme_suggestions_alter(array &$suggestions, array $variables, $hook) {
+  if (!empty($variables['element']['#entity'])) {
+    $block_type = $variables['element']['#entity']->bundle();
+    $suggestions[] = 'entity_embed_container__embed_button' . '__' . $block_type;
   }
 }
